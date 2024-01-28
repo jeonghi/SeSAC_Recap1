@@ -40,7 +40,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
   
   func sceneDidBecomeActive(_ scene: UIScene) {
-    /// 노티 제거.
-    NotificationManager.manager.removeAllNotifications()
   }
 }

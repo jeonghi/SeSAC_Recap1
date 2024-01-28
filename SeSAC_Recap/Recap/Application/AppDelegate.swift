@@ -13,8 +13,6 @@ import Toast
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     
-    NotificationManager.manager.requestNotificationAuthorization()
-    
     /// 앱 전역적으로 외형 설정
     AppAppearance.configure()
     return true

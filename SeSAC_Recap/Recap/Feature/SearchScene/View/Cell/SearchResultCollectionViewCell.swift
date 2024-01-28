@@ -35,7 +35,7 @@ class SearchResultCollectionViewCell: UICollectionViewCell {
     self.mallNameLabel.text = mallName
     self.titleLabel.attributedText = title?.htmlToAttributedString(font: FontStyle.systemFont15, color: ColorStyle.tintColor, lineHeight: 22)
     self.lpriceLabel.text = lprice
-    self.likeButton.setImage(isLike ? ImageStyle.heartFill : ImageStyle.heartEmpty, for: .normal)
+    self.likeButton.setImage(isLike ? IconStyle.heartFill : IconStyle.heartEmpty, for: .normal)
     self.tappedLikeButtonHandler = action
   }
   
