@@ -127,14 +127,11 @@ extension SearchViewController: UIViewControllerConfigurable {
   func configureLayout() {
     
     view.do {
-      $0.addSubview(searchBar)
-      $0.addSubview(searchResultView)
+      $0.addSubviews([searchBar, searchResultView])
     }
     
     searchResultView.do {
-      $0.addSubview(headerView)
-      $0.addSubview(searchHistoryTableView)
-      $0.addSubview(notiView)
+      $0.addSubviews([headerView, searchHistoryTableView, notiView])
     }
     
     searchBar.do {
@@ -192,7 +189,7 @@ extension SearchViewController: UIViewControllerConfigurable {
     searchHistoryTableView.do {
       $0.dataSource = self
       $0.delegate = self
-      $0.register(UINib(nibName: identifier, bundle: nil), forCellReuseIdentifier: identifier)
+      $0.register(SearchHistoryCell.self, forCellReuseIdentifier: identifier)
     }
     refresh()
   }

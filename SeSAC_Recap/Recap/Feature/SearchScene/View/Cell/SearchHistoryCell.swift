@@ -6,16 +6,43 @@
 //
 
 import UIKit
+import Then
+import SnapKit
 
 class SearchHistoryCell: UITableViewCell {
   
   var tappedDeleteButtonHandler: (() -> Void)?
-  @IBOutlet var contentLabel: UILabel!
   
-  @IBOutlet weak var deleteButton: UIButton!
-  @IBOutlet weak var searchImage: UIImageView!
+  var contentLabel: UILabel = .init().then {
+    $0.font = FontStyle.systemFont15
+    $0.textColor = ColorStyle.tintColor
+    $0.numberOfLines = 1
+    $0.textAlignment = .left
+  }
+  
+  var deleteButton: UIButton = .init().then {
+    $0.setImage(IconStyle.xmark, for: .normal)
+    $0.tintColor = ColorStyle.tintColor
+    $0.clipsToBounds = true
+  }
+  
+  var searchImage: UIImageView = .init(image: IconStyle.magnifyingglass).then {
+    $0.tintColor = ColorStyle.tintColor
+    $0.clipsToBounds = true
+    $0.layer.cornerRadius = $0.frame.width/2
+  }
+  
   override func awakeFromNib() {
     super.awakeFromNib()
+    configureConfigurableMethods()
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
     configureConfigurableMethods()
   }
   
@@ -29,22 +56,44 @@ class SearchHistoryCell: UITableViewCell {
   }
   
   func prepare(content: String?, action: (() -> Void)?) {
-    contentLabel?.text = content
+    contentLabel.text = content
     tappedDeleteButtonHandler = action
   }
 }
 
 extension SearchHistoryCell: UITableViewCellConfigurable {
-  func configureLabel() {
-    contentLabel.font = FontStyle.systemFont15
-    contentLabel.textColor = ColorStyle.tintColor
-    contentLabel.numberOfLines = 1
-  }
+  
   func configureButton() {
-    deleteButton.tintColor = ColorStyle.tintColor
     deleteButton.addTarget(self, action: #selector(tappedDeleteButton), for: .touchUpInside)
   }
-  func configureImageView() {
-    searchImage.tintColor = ColorStyle.tintColor
+  
+  func configureLayout() {
+    contentView.do {
+      $0.addSubviews([searchImage, contentLabel, deleteButton])
+    }
+    
+    searchImage.do {
+      $0.snp.makeConstraints {
+        $0.leading.equalToSuperview().inset(5)
+        $0.size.equalTo(20)
+        $0.centerY.equalToSuperview()
+      }
+    }
+    
+    deleteButton.do {
+      $0.snp.makeConstraints {
+        $0.size.equalTo(35)
+        $0.trailing.equalToSuperview().inset(5)
+        $0.centerY.equalToSuperview()
+      }
+    }
+    
+    contentLabel.do {
+      $0.snp.makeConstraints{
+        $0.leading.equalTo(searchImage.snp.trailing).offset(10)
+        $0.trailing.equalTo(deleteButton.snp.leading).offset(10)
+        $0.centerY.equalToSuperview()
+      }
+    }
   }
 }
