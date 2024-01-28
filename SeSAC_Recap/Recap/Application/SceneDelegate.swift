@@ -24,7 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     let rootViewController: UIViewController
     
-    if let _ = UserDefaultManager.profileInfo.nickName {
+    if let nickName = UserDefaultManager.profileInfo.nickName, !nickName.isEmpty {
       let mainTabSB = UIStoryboard(name: MainTabBarViewController.identifier, bundle: nil)
       let mainTabVC =  mainTabSB.instantiateViewController(withIdentifier: MainTabBarViewController.identifier)
       rootViewController = mainTabVC
