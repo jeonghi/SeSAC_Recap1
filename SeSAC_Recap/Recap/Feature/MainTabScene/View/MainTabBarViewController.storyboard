@@ -71,11 +71,11 @@
                 <tabBarController storyboardIdentifier="MainTabBarViewController" automaticallyAdjustsScrollViewInsets="NO" id="uRE-5o-Klc" customClass="MainTabBarViewController" customModule="SeSAC_Recap" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="12C-xG-2zP">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="lpj-lh-oNa" kind="relationship" relationship="viewControllers" id="DM1-6v-RSk"/>
                         <segue destination="Dn9-Sh-8b2" kind="relationship" relationship="viewControllers" id="MTA-2z-AdQ"/>
                     </connections>
                 </tabBarController>

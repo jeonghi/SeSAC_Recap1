@@ -7,6 +7,7 @@
 
 import UIKit
 import Then
+import SnapKit
 
 class SearchViewController: UIViewController {
   
@@ -25,18 +26,31 @@ class SearchViewController: UIViewController {
   
   var dataSource = [Section]()
   
-  @IBOutlet weak var searchBar: UISearchBar!
+  var searchBar: UISearchBar = .init()
+  var searchResultView: UIView = .init()
   
-  @IBOutlet weak var headerView: UIStackView!
-  @IBOutlet weak var headerLabel: UILabel!
-  @IBOutlet weak var headerButton: UIButton!
   
-  @IBOutlet weak var notiView: UIStackView!
-  @IBOutlet weak var notiLabel: UILabel!
+  var headerLabel: UILabel = .init()
+  var headerButton: UIButton = .init()
+  lazy var headerView: UIStackView = .init(arrangedSubviews: [headerLabel, headerButton]).then {
+    $0.axis = .horizontal
+    $0.distribution = .equalSpacing
+    $0.alignment = .center
+  }
   
-  @IBOutlet weak var searchHistoryTableView: UITableView!
+  var searchHistoryTableView: UITableView = .init()
   
-  var recog: UIGestureRecognizer?
+  var notiLabel: UILabel = .init()
+  var notiImage: UIImageView = .init(image: ImageStyle.empty)
+  
+  lazy var notiView: UIStackView = .init(arrangedSubviews: [notiImage, notiLabel]).then {
+    $0.axis = .vertical
+    $0.spacing = 10
+    $0.distribution = .equalSpacing
+    $0.alignment = .center
+  }
+
+  var recog: UIGestureRecognizer = .init()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -98,16 +112,69 @@ extension SearchViewController: UIViewControllerConfigurable {
     if searchHistoryLog.isEmpty {
       
       /// 노티 부분을 나타냄
-      notiBound.forEach { $0?.isHidden = false }
-      searchHistoryBound.forEach{ $0?.isHidden = true }
+      notiBound.forEach { $0.isHidden = false }
+      searchHistoryBound.forEach{ $0.isHidden = true }
     } else {
-      notiBound.forEach { $0?.isHidden = true }
-      searchHistoryBound.forEach { $0?.isHidden = false }
+      notiBound.forEach { $0.isHidden = true }
+      searchHistoryBound.forEach { $0.isHidden = false }
     }
   }
   
   @objc func tappedAroundView(){
     view.endEditing(true)
+  }
+  
+  func configureLayout() {
+    
+    view.do {
+      $0.addSubview(searchBar)
+      $0.addSubview(searchResultView)
+    }
+    
+    searchResultView.do {
+      $0.addSubview(headerView)
+      $0.addSubview(searchHistoryTableView)
+      $0.addSubview(notiView)
+    }
+    
+    searchBar.do {
+      $0.snp.makeConstraints {
+        $0.topMargin.equalToSuperview().offset(10)
+        $0.horizontalEdges.equalToSuperview()
+        $0.height.equalTo(40)
+      }
+    }
+    
+    searchResultView.do {
+      $0.snp.makeConstraints {
+        $0.top.equalTo(searchBar.snp.bottom)
+        $0.horizontalEdges.equalToSuperview()
+        $0.bottom.equalToSuperview()
+      }
+    }
+    
+    headerView.do {
+      $0.snp.makeConstraints {
+        $0.horizontalEdges.equalToSuperview().inset(20)
+        $0.top.equalToSuperview().offset(10)
+      }
+    }
+    
+    searchHistoryTableView.do {
+      $0.snp.makeConstraints {
+        $0.topMargin.equalTo(headerView.snp.bottom).offset(10)
+        $0.horizontalEdges.equalToSuperview()
+        $0.bottomMargin.equalToSuperview()
+      }
+    }
+    
+    notiView.do {
+      $0.snp.makeConstraints {
+        $0.horizontalEdges.equalToSuperview().inset(40)
+        $0.centerY.equalToSuperview()
+        $0.centerX.equalToSuperview()
+      }
+    }
   }
   
   func configureView(){
@@ -146,6 +213,7 @@ extension SearchViewController: UIViewControllerConfigurable {
       $0.font = FontStyle.systemFont15
       $0.textColor = ColorStyle.tintColor
       $0.text = "최근 검색"
+      $0.textAlignment = .center
     }
     
     notiLabel.do {
@@ -176,12 +244,12 @@ extension SearchViewController: UISearchBarDelegate {
   }
   
   func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-    recog?.isEnabled = true
+    recog.isEnabled = true
     return true
   }
   
   func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
-    recog?.isEnabled = false
+    recog.isEnabled = false
     return true
   }
 }

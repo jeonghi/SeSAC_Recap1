@@ -1,13 +1,11 @@
 //
-//  ImageStyle.swift
+//  ImageStyler.swift
 //  SeSAC_Recap
 //
-//  Created by 쩡화니 on 1/22/24.
+//  Created by 쩡화니 on 1/28/24.
 //
-
 import UIKit
 
 enum ImageStyle {
-  static let heartFill = UIImage(systemName: "heart.fill")
-  static let heartEmpty = UIImage(systemName: "heart")
+  static let empty: UIImage = .empty
 }

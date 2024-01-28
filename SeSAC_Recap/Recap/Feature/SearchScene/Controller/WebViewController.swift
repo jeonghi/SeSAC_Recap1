@@ -29,7 +29,7 @@ class WebViewController: UIViewController {
     
     /// 좋아요 버튼 이미지 업데이트
     if let likeButton = navigationItem.rightBarButtonItem {
-      likeButton.image = product.isLiked ? ImageStyle.heartFill : ImageStyle.heartEmpty
+      likeButton.image = product.isLiked ? IconStyle.heartFill : IconStyle.heartEmpty
     }
   }
 }
@@ -41,7 +41,7 @@ extension WebViewController: UIViewControllerConfigurable {
   }
   
   func updateLikeButtonState() {
-    likeButton.image = product.isLiked ? ImageStyle.heartFill : ImageStyle.heartEmpty
+    likeButton.image = product.isLiked ? IconStyle.heartFill : IconStyle.heartEmpty
   }
   
   func configureWebView() {
@@ -55,7 +55,7 @@ extension WebViewController: UIViewControllerConfigurable {
   func configureNavigationBar() {
     
     /// 좋아요 버튼 생성
-    likeButton = UIBarButtonItem(image: product.isLiked ? ImageStyle.heartFill : ImageStyle.heartEmpty, style: .plain, target: self, action: #selector(likeButtonTapped))
+    likeButton = UIBarButtonItem(image: product.isLiked ? IconStyle.heartFill : IconStyle.heartEmpty, style: .plain, target: self, action: #selector(likeButtonTapped))
     likeButton.tintColor = ColorStyle.tintColor
     
     /// 좋아요 버튼을 내비게이션 바 우측 상단에 추가
