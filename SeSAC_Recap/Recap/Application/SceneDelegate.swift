@@ -38,4 +38,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     window?.rootViewController = rootViewController // 특정 ViewController
     window?.makeKeyAndVisible()
   }
+  
+  func sceneDidBecomeActive(_ scene: UIScene) {
+    /// 노티 제거.
+    NotificationManager.manager.removeAllNotifications()
+  }
 }
