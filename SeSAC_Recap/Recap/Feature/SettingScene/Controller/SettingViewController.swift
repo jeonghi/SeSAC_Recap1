@@ -56,8 +56,6 @@ extension SettingViewController {
   /// 초기화 승인 메서드, 얼럿과 연결
   private func confirmRestart() {
     
-    
-    
     let identifier = OnboardingViewController.identifier
     
     let sb = UIStoryboard(name: identifier, bundle: nil)

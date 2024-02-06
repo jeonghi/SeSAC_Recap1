@@ -65,7 +65,7 @@ extension SearchResultCollectionViewCell: UICollectionViewCellConfigurable {
       $0.font = FontStyle.systemFont13
       $0.textColor = ColorStyle.tintColor
     }
-    
+    ;
     titleLabel.do {
       $0.font = FontStyle.systemFont15
       $0.textColor = ColorStyle.tintColor

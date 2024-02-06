@@ -25,31 +25,11 @@ class UserProfileSettingViewController: UIViewController {
     }
   }
   
-  var textValidationResult: ValidationState = .invalidLength {
-    didSet {
-      validationStatusLabel.do {
-        $0.text = textValidationResult.stateLabel
-        $0.textColor = textValidationResult.stateColor
-      }
-      doneButton.applyStyle(.primary, isEnabled: isDone)
-    }
-    
-  }
-  
-  var isDone: Bool {
-    switch textValidationResult {
-    case .valid:
-      return true
-    default:
-      return false
-    }
-  }
-  
   // MARK: Life cycle
   override func viewDidLoad() {
     super.viewDidLoad()
     configureConfigurableMethods()
-    validateText(nicknameTextField.text)
+    updateValidationStatus(nicknameTextField.text)
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -63,10 +43,7 @@ class UserProfileSettingViewController: UIViewController {
   
   // MARK: Method
   @objc func textFieldDidChange(_ textField: UITextField) {
-    guard let text = textField.text else {
-      return
-    }
-    validateText(text)
+    updateValidationStatus(textField.text)
   }
   
   @IBAction func tappedAroundView(_ sender: Any) {
@@ -118,16 +95,44 @@ class UserProfileSettingViewController: UIViewController {
 extension UserProfileSettingViewController {
   
   /// 텍스트 필드 검증 타입
-  enum ValidationState {
-    case valid
+//  enum ValidationState {
+//    case valid
+//    case invalidLength
+//    case invalidSpecialCharacter(character: Character)
+//    case invalidNumberCharacter(character: Character)
+//    
+//    var stateLabel: String {
+//      switch self {
+//      case .valid:
+//        return "사용할 수 있는 닉네임이에요"
+//      case .invalidLength:
+//        return "2글자 이상 10글자 미만으로 설정해주세요"
+//      case .invalidSpecialCharacter(let character):
+//        return "닉네임에 특수 문자 '\(character)'는 포함할 수 없어요"
+//      case .invalidNumberCharacter(let character):
+//        return "닉네임에 숫자 '\(character)'는 포함할 수 없어요"
+//      }
+//    }
+//    
+//    var stateColor: UIColor {
+//      switch self {
+//      case .valid:
+//        return ColorStyle.pointColor
+//      default:
+//        return ColorStyle.warningColor
+//      }
+//    }
+//  }
+  
+  // 흠냐흠냐.. 단점?, 에러 타입별로 색상을 달리하려면 Error 바깥 Scope에서 관리해야한다는 점.
+  // valid에 대한 상태관리는 별도로 가지고 있지 않다는점..
+  enum ValidationError: Error, LocalizedError {
     case invalidLength
     case invalidSpecialCharacter(character: Character)
     case invalidNumberCharacter(character: Character)
     
-    var stateLabel: String {
+    public var errorDescription: String? {
       switch self {
-      case .valid:
-        return "사용할 수 있는 닉네임이에요"
       case .invalidLength:
         return "2글자 이상 10글자 미만으로 설정해주세요"
       case .invalidSpecialCharacter(let character):
@@ -136,30 +141,15 @@ extension UserProfileSettingViewController {
         return "닉네임에 숫자 '\(character)'는 포함할 수 없어요"
       }
     }
-    
-    var stateColor: UIColor {
-      switch self {
-      case .valid:
-        return ColorStyle.pointColor
-      default:
-        return ColorStyle.warningColor
-      }
-    }
   }
   
   /// 텍스트 필드 검증 로직
-  func validateText(_ text: String?) {
+  func validateText(_ text: String?) throws -> Void {
     
-    guard let text else {
-      textValidationResult = .invalidLength
-      return
-    }
+    guard let text else { throw ValidationError.invalidLength }
     
     /// 길이 검사
-    if text.count < 2 || text.count >= 10 {
-      textValidationResult = .invalidLength
-      return
-    }
+    if text.count < 2 || text.count >= 10 { throw ValidationError.invalidLength }
     
     /// 특수 문자 및 숫자 검사 (정규표현식 사용)
     let specialCharacterRegex = ".*[@#$%].*"
@@ -168,22 +158,34 @@ extension UserProfileSettingViewController {
     if let _ = text.range(of: specialCharacterRegex, options: .regularExpression) {
       /// 특수 문자가 발견된 경우
       if let invalidCharacter = text.first(where: { "@#$%".contains($0) }) {
-        textValidationResult = .invalidSpecialCharacter(character: invalidCharacter)
+        throw ValidationError.invalidSpecialCharacter(character: invalidCharacter)
       }
-      return
     }
     
     if let _ = text.range(of: numberRegex, options: .regularExpression) {
       /// 숫자가 발견된 경우
       if let invalidCharacter = text.first(where: { "0123456789".contains($0) }) {
-        textValidationResult = .invalidNumberCharacter(character: invalidCharacter)
+        throw ValidationError.invalidNumberCharacter(character: invalidCharacter)
       }
-      return
     }
-    
-    textValidationResult = .valid
   }
   
+  func updateValidationStatus(_ text: String?) {
+    do {
+      try validateText(text)
+      validationStatusLabel.text = "사용할 수 있는 닉네임이에요"
+      validationStatusLabel.textColor = ColorStyle.pointColor
+      doneButton.applyStyle(.primary, isEnabled: true)
+    } catch {
+      if let error = error as? ValidationError {
+        validationStatusLabel.text = error.localizedDescription
+      } else {
+        validationStatusLabel.text = "알 수 없는 문제가 발생했습니다."
+      }
+      validationStatusLabel.textColor = ColorStyle.warningColor
+      doneButton.applyStyle(.primary, isEnabled: false)
+    }
+  }
 }
 
 
@@ -235,8 +237,12 @@ extension UserProfileSettingViewController: UIViewControllerConfigurable {
 }
 
 extension UserProfileSettingViewController: UITextFieldDelegate {
+  
   func textFieldDidChangeSelection(_ textField: UITextField) {
     
   }
-
+  
+  func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    return true
+  }
 }
