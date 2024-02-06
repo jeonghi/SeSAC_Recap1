@@ -51,7 +51,7 @@ class SearchResultViewController: UIViewController {
   var searchText: String?
   var itemList: [NaverShopSearchEntity.ShopItem] = []
   
-  //MARK:
+  // MARK:
   var request: NaverShopSearchEntity.Request {
     get {
       .init(query: searchText ?? "", display: itemsPerPage, start: (currentPage) * itemsPerPage + 1, sort: selectedSortType)

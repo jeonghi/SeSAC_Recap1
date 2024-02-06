@@ -19,12 +19,7 @@ class SearchService {
     let baseURL = "https://openapi.naver.com/v1/search/shop.json"
     
     // Request 객체를 사용하여 파라미터 구성
-    let parameters: [String: Any] = [
-      "query": request.query,
-      "display": request.display,
-      "start": request.start,
-      "sort": request.sort.rawValue // SortType을 rawValue로 변환하여 전달
-    ]
+    let parameters = request.parameters
     
     let headers: HTTPHeaders = [
       "X-Naver-Client-Id": AppConfiguration.shared.naverClientID,

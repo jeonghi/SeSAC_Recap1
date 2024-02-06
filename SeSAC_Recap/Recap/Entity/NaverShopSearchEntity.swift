@@ -9,7 +9,7 @@ import Foundation
 
 enum NaverShopSearchEntity {
   
-  struct Request: Codable {
+  struct Request: Encodable {
     
     let query: String /// 검색 문자
     let display: Int /// 30을 기본으로 가져오도록 함.
@@ -28,10 +28,11 @@ enum NaverShopSearchEntity {
         "query": query,
         "display": display,
         "start": start,
+        "sort": sort.rawValue
       ]
     }
     
-    enum SortType: String, Codable, CaseIterable {
+    enum SortType: String, Encodable, CaseIterable {
       
       case sim /// 정확도순으로 내림차순 정렬 (기본값)
       case date /// 날짜순으로 내림차순 정렬
@@ -53,7 +54,7 @@ enum NaverShopSearchEntity {
     }
   }
   
-  struct Response: Codable {
+  struct Response: Decodable {
     let lastBuildDate: String
     let total: Int
     let start: Int
