@@ -8,6 +8,7 @@
 import Alamofire
 import Foundation
 
+
 class SearchService {
   
   static let shared = SearchService()
@@ -44,6 +45,6 @@ class SearchService {
           }
           completion(.failure(NetworkError.checkError(data: data, response: response) ?? .unknown("알 수 없는 에러")))
         }
-      }
+    }
   }
 }

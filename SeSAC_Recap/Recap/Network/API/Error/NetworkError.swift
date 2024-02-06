@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum NetworkError: Error {
+public enum NetworkError: Error, LocalizedError {
   
   case urlComponent
   case invalidUrl(Error)
@@ -22,7 +22,7 @@ public enum NetworkError: Error {
   case serverError(String)
   case unknown(String)
   
-  public var localizedString: String {
+  public var errorDescription: String? {
     switch self {
     case .urlComponent:
       return "🚨url component error🚨: url 생성 과정 문제"
