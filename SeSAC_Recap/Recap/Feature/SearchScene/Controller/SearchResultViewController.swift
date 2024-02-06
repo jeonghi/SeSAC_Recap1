@@ -104,13 +104,13 @@ class SearchResultViewController: UIViewController {
     /// 활성화된 로딩 인디케이터를 보이도록 설정
     let request = self.request
     print(request)
-    APIService.searchService.callRequest(request: request) { [weak self] result in
+    APIService.searchService.searchProduct(request: request) { [weak self] result in
       guard let self = self else { return }
       switch result {
       case .success(let response):
         /// 검색 결과를 products 배열에 추가
-        self.totalItems = response.total
-        self.itemList.append(contentsOf: response.items)
+        self.totalItems = response?.total
+        self.itemList.append(contentsOf: response?.items ?? [])
         self.isLoadingData = false
         refresh()
         

@@ -8,43 +8,23 @@
 import Alamofire
 import Foundation
 
+typealias ProductResponse = NaverShopSearchEntity.Response
+typealias ProductResponseHandler = (Result<ProductResponse?, NetworkError>) -> Void
 
-class SearchService {
+protocol NaverShopingServiceType {
+  func searchProduct(request: NaverShopSearchEntity.Request, completion: @escaping ProductResponseHandler)
+}
+
+class NaverShopingService {
   
-  static let shared = SearchService()
+  static let shared = NaverShopingService()
+  
+  private let network = Network<NaverAPI>()
   
   private init() {}
   
-  func callRequest(request: NaverShopSearchEntity.Request, completion: @escaping (Result<NaverShopSearchEntity.Response, NetworkError>) -> Void){
+  func searchProduct(request: NaverShopSearchEntity.Request, completion: @escaping ProductResponseHandler){
     
-    let baseURL = "https://openapi.naver.com/v1/search/shop.json"
-    
-    // Request 객체를 사용하여 파라미터 구성
-    let parameters = request.parameters
-    
-    let headers: HTTPHeaders = [
-      "X-Naver-Client-Id": AppConfiguration.shared.naverClientID,
-      "X-Naver-Client-Secret": AppConfiguration.shared.naverClientSecret
-    ]
-    
-    if let url = try? URLRequest(url: baseURL, method: .get, headers: nil).asURLRequest().url?.absoluteString {
-      print("Request URL: \(url)") // URL을 출력
-    }
-    
-    AF.request(baseURL, method: .get, parameters: parameters, headers: headers)
-      .responseDecodable(of: NaverShopSearchEntity.Response.self) { res in
-        switch res.result {
-        case .success(let success):
-          completion(.success(success))
-        case .failure(let error):
-          dump(error)
-          guard let data = res.data, let response = res.response else {
-            print(res.data)
-            completion(.failure(.unknown("알 수 없는 에러")))
-            return
-          }
-          completion(.failure(NetworkError.checkError(data: data, response: response) ?? .unknown("알 수 없는 에러")))
-        }
-    }
+    network.requestUrlSession(.getProductList(query: request.query, display: request.display, start: request.start, sort: request.sort.rawValue), responseType: ProductResponse.self, completion: completion)
   }
 }

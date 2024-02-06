@@ -8,5 +8,5 @@
 import Foundation
 
 enum APIService {
-  static let searchService = SearchService.shared
+  static let searchService = NaverShopingService.shared
 }
