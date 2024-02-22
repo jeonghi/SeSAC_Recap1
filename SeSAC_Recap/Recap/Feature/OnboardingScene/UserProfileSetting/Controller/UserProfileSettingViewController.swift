@@ -16,14 +16,7 @@ class UserProfileSettingViewController: UIViewController {
   @IBOutlet weak var validationStatusLabel: UILabel!
   @IBOutlet weak var doneButton: UIButton!
   
-  var profileInfo: ProfileInfo {
-    get {
-      UserDefaultManager.profileInfo
-    }
-    set {
-      UserDefaultManager.profileInfo = newValue
-    }
-  }
+  let viewModel: UserProfileSetttingViewModel = .init()
   
   // MARK: Life cycle
   override func viewDidLoad() {
@@ -60,7 +53,7 @@ class UserProfileSettingViewController: UIViewController {
   @IBAction func tappedDoneButton(_ sender: UIButton) {
     
     /// 프로필 정보 저장
-    profileInfo.nickName = nicknameTextField.text
+    viewModel.profileInfo.nickName = nicknameTextField.text
     
     /// 현재 내비게이션 스택의 루트 뷰 컨트롤러 확인
     if let rootViewController = navigationController?.viewControllers.first {
@@ -193,7 +186,7 @@ extension UserProfileSettingViewController {
 extension UserProfileSettingViewController: UIViewControllerConfigurable {
   
   func updateView(){
-    profileImageView.image = profileInfo.profileImage?.image
+    profileImageView.image = viewModel.profileInfo.profileImage?.image
   }
   
   func configureView() {
@@ -225,7 +218,7 @@ extension UserProfileSettingViewController: UIViewControllerConfigurable {
       $0.font = FontStyle.systemFont17
       $0.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
       $0.addBottomLineToTextField()
-      $0.text = profileInfo.nickName
+      $0.text = viewModel.profileInfo.nickName
     }
   }
   
