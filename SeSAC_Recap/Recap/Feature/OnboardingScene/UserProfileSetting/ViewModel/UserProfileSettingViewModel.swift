@@ -19,6 +19,7 @@ class UserProfileSettingViewModel {
   @Observable var textValidationResult: ValidationState = .invalidLength
   
   init() {
+    inputText = self.profileInfo.nickName
     _inputText.bind {
       self.textValidationResult = self.validateText($0)
     }
