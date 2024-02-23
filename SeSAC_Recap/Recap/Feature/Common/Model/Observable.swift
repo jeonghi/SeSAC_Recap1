@@ -8,7 +8,7 @@
 import Foundation
 
 // ⭐️ class로 할때랑 struct로 할때의 차이
-@propertyWrapper
+
 class Observable<T> {
   
   var wrappedValue: T {
@@ -19,7 +19,7 @@ class Observable<T> {
   
   private var _closure: ((T) -> Void)?
   
-  init(wrappedValue: T) {
+  init(_ wrappedValue: T) {
     self.wrappedValue = wrappedValue
   }
   

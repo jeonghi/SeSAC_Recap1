@@ -22,7 +22,7 @@ class UserProfileSettingViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     configureConfigurableMethods()
-    viewModel.bindValidationResult { status in
+    viewModel.textValidationResult.bind { status in
       self.validationStatusLabel.do {
         $0.text = status.stateLabel
         $0.textColor = (status == .valid ? ColorStyle.pointColor : ColorStyle.warningColor )
@@ -42,7 +42,7 @@ class UserProfileSettingViewController: UIViewController {
   
   // MARK: Method
   @objc func textFieldDidChange(_ textField: UITextField) {
-    viewModel.inputText = textField.text
+    viewModel.inputText.wrappedValue = textField.text
   }
   
   @IBAction func tappedAroundView(_ sender: Any) {

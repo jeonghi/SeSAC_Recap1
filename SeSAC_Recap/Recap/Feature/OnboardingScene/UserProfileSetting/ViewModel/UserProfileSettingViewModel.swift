@@ -15,18 +15,14 @@ class UserProfileSettingViewModel {
     set { UserDefaultManager.profileInfo = newValue }
   }
   
-  @Observable var inputText: String? = ""
-  @Observable var textValidationResult: ValidationState = .invalidLength
+  var inputText: Observable<String?> = Observable("")
+  var textValidationResult = Observable(ValidationState.invalidLength)
   
   init() {
-    inputText = self.profileInfo.nickName
-    _inputText.bind {
-      self.textValidationResult = self.validateText($0)
+    inputText.wrappedValue = self.profileInfo.nickName ?? ""
+    inputText.bind {
+      self.textValidationResult.wrappedValue = self.validateText($0)
     }
-  }
-  
-  func bindValidationResult(_ closure: ((ValidationState) -> Void)?) {
-      _textValidationResult.bind(closure)
   }
 }
 
