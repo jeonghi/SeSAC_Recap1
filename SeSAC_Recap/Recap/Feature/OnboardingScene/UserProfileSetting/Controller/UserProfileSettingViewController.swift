@@ -25,7 +25,7 @@ class UserProfileSettingViewController: UIViewController {
     viewModel.bindValidationResult { status in
       self.validationStatusLabel.do {
         $0.text = status.stateLabel
-        $0.textColor = status.stateColor
+        $0.textColor = (status == .valid ? ColorStyle.pointColor : ColorStyle.warningColor )
       }
       self.doneButton.applyStyle(.primary, isEnabled: status == .valid)
     }

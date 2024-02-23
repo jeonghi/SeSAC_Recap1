@@ -5,8 +5,8 @@
 //  Created by 쩡화니 on 2/22/24.
 //
 
-//import Foundation
-import UIKit
+import Foundation
+//import UIKit
 
 class UserProfileSettingViewModel {
   
@@ -84,15 +84,6 @@ extension UserProfileSettingViewModel {
         return "닉네임에 특수 문자 '\(character)'는 포함할 수 없어요"
       case .invalidNumberCharacter(let character):
         return "닉네임에 숫자 '\(character)'는 포함할 수 없어요"
-      }
-    }
-
-    var stateColor: UIColor {
-      switch self {
-      case .valid:
-        return ColorStyle.pointColor
-      default:
-        return ColorStyle.warningColor
       }
     }
   }
