@@ -13,7 +13,7 @@ struct Product: Identifiable, Codable {
       self.isLiked = newValue
       UserDefaultManager.updateFavoriteProducts(product: self)
     }
-  }/// 좋아요 여부를 나타내는 불리언 프로퍼티
+  }/// 좋아요 여부를 나타내는 Bool 프로퍼티
   
   /// 좋아요 상태를 토글하는 메서드
   mutating func toggleLike() {

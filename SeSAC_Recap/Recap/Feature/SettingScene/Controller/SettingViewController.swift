@@ -12,15 +12,51 @@ import Toast
 class SettingViewController: UIViewController {
   
   @IBOutlet weak var settingTableView: UITableView!
-  var dataSource = [SettingSection]()
   
+  let viewModel = SettingViewModel()
+  
+  // MARK: Life cycle
   override func viewDidLoad() {
     super.viewDidLoad()
     configureConfigurableMethods()
+    refresh()
   }
   
   override func viewWillAppear(_ animated: Bool) {
     refresh()
+  }
+  
+  private func refresh() {
+    viewModel.dataSource.bind { _ in
+      self.settingTableView.reloadData()
+    }
+  }
+}
+
+extension SettingViewController: UIViewControllerConfigurable {
+  
+  func configureView() {
+    setDefaultBackground()
+  }
+  
+  func configureNavigationBar() {
+    self.navigationItem.title = "설정"
+  }
+  
+  func configureTableView() {
+    
+    settingTableView = settingTableView.then {
+      $0.delegate = self
+    }
+    
+    settingTableView.delegate = self
+    settingTableView.dataSource = self
+    
+    settingTableView.backgroundColor = .clear
+    settingTableView.separatorColor = ColorStyle.tintColor
+    
+    settingTableView.register(UINib(nibName: ProfileCell.identifier, bundle: nil), forCellReuseIdentifier: ProfileCell.identifier)
+    settingTableView.register(UINib(nibName: TitleCell.identifier, bundle: nil), forCellReuseIdentifier: TitleCell.identifier)
   }
 }
 
@@ -80,40 +116,10 @@ extension SettingViewController {
   }
 }
 
-extension SettingViewController: UIViewControllerConfigurable {
-  
-  func configureView() {
-    setDefaultBackground()
-  }
-  func configureNavigationBar() {
-    self.navigationItem.title = "설정"
-  }
-  func configureLabel(){
-    
-  }
-  func configureTableView() {
-    
-    settingTableView = settingTableView.then {
-      $0.delegate = self
-    }
-    
-    settingTableView.delegate = self
-    settingTableView.dataSource = self
-    
-    settingTableView.backgroundColor = .clear
-    settingTableView.separatorColor = ColorStyle.tintColor
-    
-    settingTableView.register(UINib(nibName: ProfileCell.identifier, bundle: nil), forCellReuseIdentifier: ProfileCell.identifier)
-    settingTableView.register(UINib(nibName: TitleCell.identifier, bundle: nil), forCellReuseIdentifier: TitleCell.identifier)
-    
-    refresh()
-  }
-}
-
 // MARK: 테이블 뷰 델리게이트 (액션 처리)
 extension SettingViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    switch self.dataSource[indexPath.section] {
+    switch self.viewModel.dataSource.wrappedValue[indexPath.section] {
     case .profile:
       let identifier = UserProfileSettingViewController.identifier
       let sb = UIStoryboard(name: identifier, bundle: nil)
@@ -133,40 +139,16 @@ extension SettingViewController: UITableViewDelegate {
 // MARK: 테이블 뷰 데이터소스 (레이아웃 설정)
 extension SettingViewController: UITableViewDataSource {
   
-  private func refresh() {
-    // 프로필
-    let profileModel = ProfileModel(
-      profileImage: UserDefaultManager.profileInfo.profileImage?.image,
-      titleText: UserDefaultManager.profileInfo.nickName,
-      descriptionText: "\(UserDefaultManager.favoriteProductDict.count)개의 상품을 좋아하고 있어요"
-    )
-    let profileSection = SettingSection.profile([profileModel])
-    
-    /// 타이틀
-    let titleModels: [TitleModel] = ["공지사항", "자주 묻는 질문", "1:1 문의", "알림설정", "처음부터 시작하기"].map{
-      TitleModel.init(title: $0)
-    }
-    let titleSection = SettingSection.title(titleModels)
-    
-    self.dataSource = [profileSection, titleSection]
-    self.settingTableView.reloadData()
-  }
-  
   func numberOfSections(in tableView: UITableView) -> Int {
-    self.dataSource.count
+    self.viewModel.numberOfSections
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    switch self.dataSource[section] {
-    case let .profile(profileModels):
-      profileModels.count
-    case let .title(titleModels):
-      titleModels.count
-    }
+    self.viewModel.numberOfRowsInSection(for: section)
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    switch self.dataSource[indexPath.section] {
+    switch self.viewModel.dataSource.wrappedValue[indexPath.section] {
     case let .profile(profileModels):
       let cell = tableView.dequeueReusableCell(withIdentifier: ProfileCell.identifier, for: indexPath) as! ProfileCell
       let profileModel = profileModels[indexPath.row]
@@ -183,28 +165,6 @@ extension SettingViewController: UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    switch self.dataSource[indexPath.section] {
-    case .profile:
-      return 80
-    case .title:
-      return 40
-    }
-  }
-}
-
-extension SettingViewController {
-  enum SettingSection {
-    case profile([ProfileModel])
-    case title([TitleModel])
-  }
-  
-  struct ProfileModel {
-    let profileImage: UIImage?
-    let titleText: String?
-    let descriptionText: String?
-  }
-  
-  struct TitleModel: Equatable {
-    let title: String?
+    viewModel.tableViewHeightForRowAt(for: indexPath)
   }
 }

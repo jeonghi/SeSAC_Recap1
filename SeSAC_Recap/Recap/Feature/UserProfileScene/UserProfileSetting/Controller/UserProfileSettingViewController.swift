@@ -144,12 +144,12 @@ extension UserProfileSettingViewController: UIViewControllerConfigurable {
 }
 
 extension UserProfileSettingViewController: UITextFieldDelegate {
-  
-  func textFieldDidChangeSelection(_ textField: UITextField) {
-    
-  }
-  
-  func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-    return true
-  }
+//  
+//  func textFieldDidChangeSelection(_ textField: UITextField) {
+//    
+//  }
+//  
+//  func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//    return true
+//  }
 }

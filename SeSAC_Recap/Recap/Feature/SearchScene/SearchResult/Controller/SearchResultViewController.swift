@@ -25,8 +25,7 @@ class SearchResultViewController: UIViewController {
     SearchFilterOptionCell.identifier
   }
   
-  var searchResultCellId: String { SearchResultCollectionViewCell.identifier
-  }
+  var searchResultCellId: String { SearchResultCollectionViewCell.identifier }
   
   var activeViews: [UIView] {
     [totalCountLabel, collectionView, sortOptionCollectionView]
@@ -105,18 +104,18 @@ class SearchResultViewController: UIViewController {
     let request = self.request
     print(request)
     APIService.searchService.searchProduct(request: request) { [weak self] result in
-      guard let self = self else { return }
+      guard let self else { return }
       switch result {
       case .success(let response):
         /// 검색 결과를 products 배열에 추가
-        self.totalItems = response?.total
-        self.itemList.append(contentsOf: response?.items ?? [])
-        self.isLoadingData = false
+        totalItems = response?.total
+        itemList.append(contentsOf: response?.items ?? [])
+        isLoadingData = false
         refresh()
         
       case .failure(let error):
         view.makeToast("\(error.localizedDescription)", duration: .init(2))
-        self.isLoadingData = false
+        isLoadingData = false
       }
     }
   }
